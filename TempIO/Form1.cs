@@ -31,6 +31,7 @@ namespace TempIO
 
         private void Button1_Click_1(object sender, EventArgs e)
         {
+            
             try
             {
                 listView1.Items.Clear();
@@ -167,7 +168,9 @@ namespace TempIO
         private void button3_Click(object sender, EventArgs e)
         {
             var chart = new Chart();
-            chart.Show();
+            //chart.Show();
+            var temp = new Logika.LogikaRozmyta();
+            temp.Work(7);
         }
     }
 }

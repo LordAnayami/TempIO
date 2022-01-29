@@ -59,15 +59,28 @@
         private void Wnioskuj()
         {
             for(double x = 0 ; x <= 5; x += 0.5)
-            {
+            {               
                 double value;
                 var temp = new List<double>();
-                temp.Add(Math.Min(1 - x / 2, uNiska));
-                temp.Add(Math.Min((x - 1) / 1.5, uSredna));
-                temp.Add(Math.Min(1 - (x - 2.5) / 1.5, uSredna));
-                temp.Add(Math.Min((x - 3) / 2, uDuza));
+                double tempValue;
 
-                value = temp.Min();
+                tempValue = 1 - x / 2;
+                if(tempValue >= 0 && tempValue <= 1)
+                    temp.Add(Math.Min(tempValue, uNiska));
+
+                tempValue = (x - 1) / 1.5;
+                if(tempValue >= 0 && tempValue <= 1)
+                    temp.Add(Math.Min(tempValue >= 0 ? tempValue : 1, uSredna));
+
+                tempValue = 1 - (x - 2.5) / 1.5;
+                if (tempValue >= 0 && tempValue <= 1)
+                    temp.Add(Math.Min(tempValue >= 0 ? tempValue : 1, uSredna));
+
+                tempValue = (x - 3) / 2;
+                if (tempValue >= 0 && tempValue <= 1)
+                    temp.Add(Math.Min(tempValue >= 0 ? tempValue : 1, uDuza));
+
+                value = temp.Max();
                 zbiorRozmyty.Add(value);
             }
         }
