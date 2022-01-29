@@ -4,9 +4,11 @@
     {
         #region params
         // Różnica temperatur
-        double uNiska { private set; get; }  
-        double uSredna { private set; get; }  
-        double uDuza { private set; get; }  
+        private double uNiska { set; get; }  
+        private double uSredna { set; get; }  
+        private double uDuza { set; get; }  
+
+        private List<double> zbiorRozmyty = new List<double>();
         #endregion
         
         public LogikaRozmyta() 
@@ -17,6 +19,7 @@
         #region private
         private void Rozmyj(double input)
         {
+            if (input < 0) throw new Exception("input cant be below 0");
             if(input >= 0 && input <= 5)
             {
                 uNiska = 1;
@@ -55,15 +58,33 @@
 
         private void Wnioskuj()
         {
+            for(double x = 0 ; x <= 5; x += 0.5)
+            {
+                double value;
+                var temp = new List<double>();
+                temp.Add(Math.Min(1 - x / 2, uNiska));
+                temp.Add(Math.Min((x - 1) / 1.5, uSredna));
+                temp.Add(Math.Min(1 - (x - 2.5) / 1.5, uSredna));
+                temp.Add(Math.Min((x - 3) / 2, uDuza));
 
+                value = temp.Min();
+                zbiorRozmyty.Add(value);
+            }
         }
         #endregion
 
         #region public
         public void Work(double roznica)
         {
-            Rozmyj(roznica);
-            Wnioskuj();
+            try
+            {
+                Rozmyj(roznica);
+                Wnioskuj();
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
         #endregion
     }

@@ -163,5 +163,11 @@ namespace TempIO
                 e.Handled = true;
             }
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var chart = new Chart();
+            chart.Show();
+        }
     }
 }
