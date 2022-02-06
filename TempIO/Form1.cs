@@ -1,4 +1,4 @@
-using Logika;
+ï»¿using Logika;
 using System;
 using System.Collections.Generic;
 
@@ -17,6 +17,7 @@ namespace TempIO
         private double lambda;
         private String wynik;
         private List<string> zmianyList = new List<String>();
+        Logika.FileReader fileReader;
 
 
         private LogikaRozmyta class1;
@@ -31,98 +32,69 @@ namespace TempIO
 
         private void Button1_Click_1(object sender, EventArgs e)
         {
-            
+
             try
             {
                 listView1.Items.Clear();
                 temp1 = TextBox1.Text.ToString();
                 Temp1 = Convert.ToDouble(temp1);
-                temp2 = TextBox2.Text.ToString();
-                Temp2 = Convert.ToDouble(temp2);
                 temp3 = textBox4.Text.ToString();
                 Temp3 = Convert.ToDouble(temp3);
                 material = comboBox1.SelectedItem?.ToString();
-                if (material is null) throw new Exception("Materia³ nie wybrany");
-            } catch (Exception ex)
+                if (material is null) throw new Exception("MateriaÂ³ nie wybrany");
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show($"Error: Pole puste!\n{ex.Message}", "ERROR", MessageBoxButtons.OK);
                 return;
             }
 
+
+            temp2 = TextBox2.Text.ToString();
+            if (!string.IsNullOrEmpty(temp2))
+                Temp2 = Convert.ToDouble(temp2);
+            else
+                fileReader = new FileReader();
+           
+            
+
             if (material == "Beton") lambda = 2.86;
-            else if (material == "Ceg³a") lambda = 1.3;
+            else if (material == "CegÅ‚a") lambda = 1.3;
             else if (material == "Cement") lambda = 3.45;
             else if (material == "Drewno") lambda = 3.33;
             else if (material == "Pustak") lambda = 1.25;
             else if (material == "Styropian + Beton") lambda = 5.36;
-            else if (material == "Styropian + Ceg³a") lambda = 3.8;
+            else if (material == "Styropian + CegÂ³a") lambda = 3.8;
             else if (material == "Styropian + Cement") lambda = 5.95;
             else if (material == "Styropian + Drewno") lambda = 5.83;
             else if (material == "Styropian + Pustak") lambda = 3.55;
- 
-            label6.Text = "Pocz¹tkowa ró¿nica temperatury pomiêdzy t¹ w pomieszczeniu a chcian¹ to: " + (Temp3 - Temp1).ToString("F2") + " stopni C.";
-            obliczenia(Temp1, Temp2, Temp3, lambda);
-            //foreach (string z in zmianyList)
-            //{
-            //     listView1.Items.Add(z);
-            //}
-        }
+
+            var logikaRozmytaHandler = new Logika.LogikaRozmyta();
+
+            label6.Text = "PoczÂ¹tkowa rÃ³Â¿nica temperatury pomiÃªdzy tÂ¹ w pomieszczeniu a chcianÂ¹ to: " + (Temp3 - Temp1).ToString("F2") + " stopni C.";
 
 
-        public void obliczenia(double t1, double t2, double t3, double l)
-        {
-
-            double dtz;
-            double dtw;
-            double dtroz;
-            double dtn = 0;
-            double nowa;
-            String zmiany;
-            bool a = false;
-            int p = 0;
-
-            do
+            string zmiany;
+            var coutner = fileReader.TempList != null ? fileReader.TempList.Count : 50;
+            
+            for (int i = 0; i < coutner; i++)
             {
+                Temp2 = fileReader.TempList != null ? fileReader.TempList[i].Item2 : Temp2;
+                logikaRozmytaHandler.Work(Temp1, Temp2, Temp3, lambda);
+                Temp1 += logikaRozmytaHandler.FinalResult;
+                zmiany = $"RÃ³Å¼nica temperatury w pomieszczeniu to: {logikaRozmytaHandler.Difference.ToString("F2")} stopni C.  W ciÄ…gu godziny zmieniono o: {logikaRozmytaHandler.FinalResult.ToString("F2")} stopni C. Obecna temperatura to: {logikaRozmytaHandler.TempIn.ToString("F2")} ";
 
-                dtz = (t1 - t2);
-                dtw = (t3 - t1);
-                dtroz = dtz / (l * 24);
-
-                if (dtw < -10.0) dtn = -5 - dtroz;
-                else if (dtw < -9.0) dtn = -4.5 - dtroz;
-                else if (dtw < -8) dtn = -4.0 - dtroz;
-                else if (dtw < -7) dtn = -3.5 - dtroz;
-                else if (dtw < -6) dtn = -3.0 - dtroz;
-                else if (dtw < -5) dtn = -2.5 - dtroz;
-                else if (dtw < -4) dtn = -2.0 - dtroz;
-                else if (dtw < -3) dtn = -1.5 - dtroz;
-                else if (dtw < -2) dtn = -1.0 - dtroz;
-                else if (dtw < -1) dtn = -0.75 - dtroz;
-                else if (dtw < 0) dtn = 0 - dtroz;
-                //else if (dtw < 0.5) dtn = 0.5 - dtroz;
-                else if (dtw < 1) dtn = 0.75 - dtroz;
-                else if (dtw < 2) dtn = 1.0 - dtroz;
-                else if (dtw < 3) dtn = 1.5 - dtroz;
-                else if (dtw < 4) dtn = 2.0 - dtroz;
-                else if (dtw < 5) dtn = 2.5 - dtroz;
-                else if (dtw < 6) dtn = 3.0 - dtroz;
-                else if (dtw < 7) dtn = 3.5 - dtroz;
-                else if (dtw < 8) dtn = 4.0 - dtroz;
-                else if (dtw < 9) dtn = 4.5 - dtroz;
-                else if (dtw < 10.0) dtn = 4.75 - dtroz;
-                else if (dtw >= 10.0) dtn = 5.0 - dtroz;
-                zmiany = $"Ró¿nica temperatury w pomieszczeniu to: {dtw.ToString("F2")} stopni C.  W ci¹gu godziny zmieniono o: {dtn.ToString("F2")} stopni C";
-                t1 = t1 + dtn;
-                p++;
                 listView1.Items.Add(zmiany);
-                // zmianyList.Add(zmiany);
-                if (Math.Abs(Temp1 - Temp3) < 0.01) { a = true; zmiany = $"Osi¹gniêto temperaturê {Temp3} stopni C"; }
-                if (p > 50) a = true;
-            } while (a == false);
-            zmiany = $"Osi¹gniêto temperaturê {temp3} stopni C";
+                zmianyList.Add(zmiany);
+                if (Math.Abs(Temp1 - Temp3) < 0.01)
+                {
+                    break;
+                }
+            }
+            zmiany = $"OsiÄ…gniÄ™to temperaturÄ™ {temp3} stopni C";
             listView1.Items.Add(zmiany);
-            //zmianyList.Add(zmiany);
         }
+
 
         private void Button2_Click(object sender, EventArgs e)
         {
@@ -130,7 +102,6 @@ namespace TempIO
             TextBox2.Text = "";
             textBox4.Text = "";
             listView1.Items.Clear();
-
         }
 
         private void TextBox1_KeyPress(object sender, KeyPressEventArgs e)
@@ -153,7 +124,7 @@ namespace TempIO
             }
         }
 
- 
+
 
         private void textBox4_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -168,9 +139,7 @@ namespace TempIO
         private void button3_Click(object sender, EventArgs e)
         {
             var chart = new Chart();
-            //chart.Show();
-            var temp = new Logika.LogikaRozmyta();
-            temp.Work(7);
+            chart.Show();
         }
     }
 }
