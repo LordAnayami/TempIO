@@ -4,6 +4,8 @@
     {
         #region params
         // Różnica temperatur
+
+        private double Power { get; set; } = 1.1;
         private double uNiska { set; get; }
         private double uSredna { set; get; }
         private double uDuza { set; get; }
@@ -108,10 +110,13 @@
                     waga += waga + zbiorRozmyty[i].Item2;
                 }
             }
-            FinalResult = (suma / waga) * 3;
-            if (a == false)
+            FinalResult = (suma / waga);
+            if (a)
                 FinalResult = FinalResult - Difference2 / (Lambda * 48);
-            else FinalResult = -FinalResult - Difference2 / (Lambda * 48);
+            else 
+                FinalResult = (-1)*(FinalResult) - Difference2 / (Lambda * 48);
+
+            FinalResult *= Power;
         }
         #endregion
 
@@ -124,10 +129,7 @@
             ExpectedTemp = expectedTemp;
             Difference = (tempIn - ExpectedTemp);
             Difference2 = tempOut - TempIn;
-            if (Difference <= 0)
-                a = false;
-            else
-                a = true;
+            a = Difference <= 0 ? true : false;
             Difference = Math.Abs(Difference);
             Lambda = lambda;
 
@@ -136,7 +138,6 @@
                 Rozmyj(Difference);
                 Wnioskuj();
                 Result();
-
             }
             catch (Exception e)
             {
