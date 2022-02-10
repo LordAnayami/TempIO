@@ -86,7 +86,7 @@ namespace TempIO
                 dtz = (t1 - t2);
                 dtw = (t3 - t1);
                 dtroz = dtz / (l * 24);
-
+                // od t¹d trzeba zmieniæ
                 if (dtw < -10.0) dtn = -5 - dtroz;
                 else if (dtw < -9.0) dtn = -4.5 - dtroz;
                 else if (dtw < -8) dtn = -4.0 - dtroz;
